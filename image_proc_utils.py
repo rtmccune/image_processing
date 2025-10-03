@@ -243,10 +243,8 @@ def gen_segmap_overlays(
     # Create folder to store segmap overlays.
     if destination_folder is None:
         destination_folder = "segmentation_overlays"
-    if os.path.exists(destination_folder):
-        os.makedirs(os.path.join(destination_folder, "/segmentation_overlays"))
-    else:
-        print("Segmentation overlays folder already exists.")
+    
+    os.makedirs(destination_folder, exist_ok=True)
 
     # Read in folders of images and segmentation maps.
     if not os.path.exists(image_folder):
