@@ -1,7 +1,7 @@
 import os
 import cv2
 import numpy as np
-import pandas as pd 
+import pandas as pd
 import matplotlib.pyplot as plt
 from tqdm import tqdm
 from PIL import Image, ImageColor
@@ -36,7 +36,7 @@ def get_hex_colors(image_path):
 
     # Convert RGB to hex
     for pixel in pixels:
-        hex_color = '#{0:02x}{1:02x}{2:02x}'.format(*pixel)
+        hex_color = "#{0:02x}{1:02x}{2:02x}".format(*pixel)
         hex_colors.add(hex_color)
 
     # Return dictionary of present hex colors
@@ -84,21 +84,20 @@ def recolor_image(image, color_map=None):
     # Set default color map corresponding to plotly qualitative G10
     if color_map is None:
         color_map = {
-            '#3366CC': '#3366CC',
-            '#DC3912': '#DC3912',
-            '#FF9900': '#FF9900',
-            '#109618': '#1BB392',
-            '#990099': '#5B1982',
-            '#0099C6': '#C1C4C9',
-            '#DD4477': '#FA9BDA',
-            '#66AA00': '#A2DDF2',
-            '#B82E2E': '#047511',
-            '#316395': '#755304'
+            "#3366CC": "#3366CC",
+            "#DC3912": "#DC3912",
+            "#FF9900": "#FF9900",
+            "#109618": "#1BB392",
+            "#990099": "#5B1982",
+            "#0099C6": "#C1C4C9",
+            "#DD4477": "#FA9BDA",
+            "#66AA00": "#A2DDF2",
+            "#B82E2E": "#047511",
+            "#316395": "#755304",
         }
 
     # Precompute RGB values from keys in color map.
-    orig_rgb = [ImageColor.getrgb(hex_color_in) for hex_color_in in
-                color_map.keys()]
+    orig_rgb = [ImageColor.getrgb(hex_color_in) for hex_color_in in color_map.keys()]
 
     # Create new dictionary mapping of integers to RGB values.
     orig_rgb_dict = {0: (0, 0, 0)}
@@ -109,7 +108,7 @@ def recolor_image(image, color_map=None):
     # We accelerated the processing using numpy arrays and dictionaries, so we
     # are converting the provided image into grayscale integer labels and then
     # converting back to the desired hex colors.
-    new_int_to_hex_dict = {0: '#000000'}
+    new_int_to_hex_dict = {0: "#000000"}
     for i, (key, value) in enumerate(color_map.items(), start=1):
         new_int_to_hex_dict[i] = value
 
@@ -180,17 +179,17 @@ def gen_color_labels(image, color_map=None):
     # Set default color map.
     if color_map is None:
         color_map = {
-            0: '#3366CC',
-            1: '#DC3912',
-            2: '#FF9900',
-            3: '#109618',
-            4: '#990099',
-            5: '#0099C6',
-            6: '#DD4477',
-            7: '#66AA00',
-            8: '#B82E2E',
-            9: '#316395',
-            10: '#000000'
+            0: "#3366CC",
+            1: "#DC3912",
+            2: "#FF9900",
+            3: "#109618",
+            4: "#990099",
+            5: "#0099C6",
+            6: "#DD4477",
+            7: "#66AA00",
+            8: "#B82E2E",
+            9: "#316395",
+            10: "#000000",
         }
 
     # Convert default BGR image format to grayscale.
@@ -211,8 +210,15 @@ def gen_color_labels(image, color_map=None):
 
     return bgr_image
 
-def gen_segmap_overlays(image_folder, segs_folder, destination_folder=None, alpha=None, gamma=None,
-                        color_map=None):
+
+def gen_segmap_overlays(
+    image_folder,
+    segs_folder,
+    destination_folder=None,
+    alpha=None,
+    gamma=None,
+    color_map=None,
+):
     """
         This function generates a folder of segmentation map overlays given a folder
         of original images and folder of predicted segmentations.
@@ -236,9 +242,9 @@ def gen_segmap_overlays(image_folder, segs_folder, destination_folder=None, alph
     """
     # Create folder to store segmap overlays.
     if destination_folder is None:
-        destination_folder = 'segmentation_overlays'
+        destination_folder = "segmentation_overlays"
     if os.path.exists(destination_folder):
-        os.makedirs(os.path.join(destination_folder,'/segmentation_overlays'))
+        os.makedirs(os.path.join(destination_folder, "/segmentation_overlays"))
     else:
         print("Segmentation overlays folder already exists.")
 
@@ -249,12 +255,20 @@ def gen_segmap_overlays(image_folder, segs_folder, destination_folder=None, alph
         raise FileNotFoundError("Provided segmentation map folder path does not exist.")
 
     # Collect image files
-    image_files = [os.path.join(image_folder, filename) for filename in os.listdir(image_folder)
-                   if not filename.startswith('.') and os.path.isfile(os.path.join(image_folder, filename))]
+    image_files = [
+        os.path.join(image_folder, filename)
+        for filename in os.listdir(image_folder)
+        if not filename.startswith(".")
+        and os.path.isfile(os.path.join(image_folder, filename))
+    ]
 
     # Collect segmentation map files
-    segmap_files = [os.path.join(segs_folder, filename) for filename in os.listdir(segs_folder)
-                    if not filename.startswith('.') and os.path.isfile(os.path.join(segs_folder, filename))]
+    segmap_files = [
+        os.path.join(segs_folder, filename)
+        for filename in os.listdir(segs_folder)
+        if not filename.startswith(".")
+        and os.path.isfile(os.path.join(segs_folder, filename))
+    ]
 
     # Sort the files so that they match.
     image_files.sort()
@@ -265,7 +279,9 @@ def gen_segmap_overlays(image_folder, segs_folder, destination_folder=None, alph
     num_segmaps = len(segmap_files)
     if num_images == num_segmaps:
         # Initialize tqdm with the total number of files
-        progress_bar = tqdm(total=num_images, desc="Generating segmentation overlays...")
+        progress_bar = tqdm(
+            total=num_images, desc="Generating segmentation overlays..."
+        )
 
         # Load images from each folder and run the overlays function.
         for i, (image_file, segmap_file) in enumerate(zip(image_files, segmap_files)):
@@ -273,8 +289,11 @@ def gen_segmap_overlays(image_folder, segs_folder, destination_folder=None, alph
             segmap = cv2.imread(segmap_file)
             overlay_img = gen_overlay(image, segmap, alpha, gamma, color_map)
             cv2.imwrite(
-                os.path.join(destination_folder, f'segmap_overlay_{os.path.basename(image_file)}'),
-                overlay_img)
+                os.path.join(
+                    destination_folder, f"segmap_overlay_{os.path.basename(image_file)}"
+                ),
+                overlay_img,
+            )
 
             # Clear memory
             image = None
@@ -292,8 +311,14 @@ def gen_segmap_overlays(image_folder, segs_folder, destination_folder=None, alph
     return print("Folder of segmentation overlays generated.")
 
 
-def gen_label_overlays(image_folder, labels_folder, destination_folder=None, alpha=None, gamma=None,
-                       color_map=None):
+def gen_label_overlays(
+    image_folder,
+    labels_folder,
+    destination_folder=None,
+    alpha=None,
+    gamma=None,
+    color_map=None,
+):
     """
         This function generates a folder of label overlays given a folder
         of original images and folder of Doodler labels.
@@ -317,10 +342,10 @@ def gen_label_overlays(image_folder, labels_folder, destination_folder=None, alp
     """
     # Create folder to store label overlays.
     if destination_folder is None:
-        destination_folder = 'label_overlays'
+        destination_folder = "label_overlays"
 
     if os.path.exists(destination_folder):
-        os.makedirs(os.path.join(destination_folder,'/label_overlays'))
+        os.makedirs(os.path.join(destination_folder, "/label_overlays"))
     else:
         print("Label overlays folder already exists.")
 
@@ -331,14 +356,20 @@ def gen_label_overlays(image_folder, labels_folder, destination_folder=None, alp
         raise FileNotFoundError("Provided labels folder path does not exist.")
 
     # Collect image files
-    image_files = [os.path.join(image_folder, filename) for filename in
-                   os.listdir(image_folder) if not filename.startswith('.')
-                   and os.path.isfile(os.path.join(image_folder, filename))]
+    image_files = [
+        os.path.join(image_folder, filename)
+        for filename in os.listdir(image_folder)
+        if not filename.startswith(".")
+        and os.path.isfile(os.path.join(image_folder, filename))
+    ]
 
     # Collect segmentation map files
-    label_files = [os.path.join(labels_folder, filename) for filename in
-                   os.listdir(labels_folder) if not filename.startswith('.')
-                   and os.path.isfile(os.path.join(labels_folder, filename))]
+    label_files = [
+        os.path.join(labels_folder, filename)
+        for filename in os.listdir(labels_folder)
+        if not filename.startswith(".")
+        and os.path.isfile(os.path.join(labels_folder, filename))
+    ]
 
     # Sort the files so that they match.
     image_files.sort()
@@ -362,8 +393,11 @@ def gen_label_overlays(image_folder, labels_folder, destination_folder=None, alp
             overlay_img = gen_overlay(image, color_label, alpha, gamma, color_map)
 
             cv2.imwrite(
-                os.path.join(destination_folder, f'label_overlay_{os.path.basename(image_file)}'),
-                overlay_img)
+                os.path.join(
+                    destination_folder, f"label_overlay_{os.path.basename(image_file)}"
+                ),
+                overlay_img,
+            )
 
             # Clear memory
             image = None
@@ -379,6 +413,7 @@ def gen_label_overlays(image_folder, labels_folder, destination_folder=None, alp
     progress_bar.close()
 
     return print("Folder of label overlays generated.")
+
 
 def orig_rgb_to_gray_labels(rgb_image, color_map):
     """
@@ -403,6 +438,7 @@ def orig_rgb_to_gray_labels(rgb_image, color_map):
 
     return labels_image
 
+
 def create_labels_from_preds(preds_folder, labels_destination, color_map=None):
     # Check if the directory exists
     os.makedirs(labels_destination, exist_ok=True)
@@ -410,16 +446,16 @@ def create_labels_from_preds(preds_folder, labels_destination, color_map=None):
     # Set default color map corresponding to plotly qualitative G10
     if color_map is None:
         color_map = {
-            '#3366CC': '#3366CC',
-            '#DC3912': '#DC3912',
-            '#FF9900': '#FF9900',
-            '#109618': '#1BB392',
-            '#990099': '#5B1982',
-            '#0099C6': '#C1C4C9',
-            '#DD4477': '#FA9BDA',
-            '#66AA00': '#A2DDF2',
-            '#B82E2E': '#047511',
-            '#316395': '#755304'
+            "#3366CC": "#3366CC",
+            "#DC3912": "#DC3912",
+            "#FF9900": "#FF9900",
+            "#109618": "#1BB392",
+            "#990099": "#5B1982",
+            "#0099C6": "#C1C4C9",
+            "#DD4477": "#FA9BDA",
+            "#66AA00": "#A2DDF2",
+            "#B82E2E": "#047511",
+            "#316395": "#755304",
         }
 
     # Precompute RGB values from keys in color map.
@@ -451,44 +487,53 @@ def create_labels_from_preds(preds_folder, labels_destination, color_map=None):
 
         cv2.imwrite(label_image_path, gray_img)
 
-    with tqdm(total=len(preds_list), desc='Generating labels from predictions') as pbar:
+    with tqdm(total=len(preds_list), desc="Generating labels from predictions") as pbar:
         with ThreadPoolExecutor() as executor:
             for _ in executor.map(process_image, preds_list):
                 pbar.update(1)
 
     return None
 
+
 def quantify_water_on_roadway(labels_folder, roadway_mask_path, csv_path=None):
     roadway_mask = cv2.imread(roadway_mask_path)
     roadway_mask = cv2.cvtColor(roadway_mask, cv2.COLOR_BGR2GRAY)
     mask = np.array(roadway_mask) > 0
-    
-    roadway_pixels = np.sum(mask==1)
+
+    roadway_pixels = np.sum(mask == 1)
 
     # Initialize a list to store the results
     results = []
-    
+
     # Process each image in the folder
-    with tqdm(total=len(os.listdir(labels_folder)), desc='Quantifying water on the roadway') as pbar:
+    with tqdm(
+        total=len(os.listdir(labels_folder)), desc="Quantifying water on the roadway"
+    ) as pbar:
         for image_name in os.listdir(labels_folder):
-            if image_name.endswith('.png'):
+            if image_name.endswith(".png"):
                 image_path = os.path.join(labels_folder, image_name)
-            
+
                 # Load the grayscale image
-                grayscale_image = Image.open(image_path).convert('L')
+                grayscale_image = Image.open(image_path).convert("L")
                 image_array = np.array(grayscale_image)
-        
+
                 # Apply the mask using element-wise multiplication
                 masked_image = np.where(mask, image_array, 0)
-        
+
                 # Count the number of pixels with the integer value 1 within the masked area
                 count = np.sum(masked_image == 1)
 
                 percentage = round((count / roadway_pixels) * 100, 2)
-        
+
                 # Append the results to the list
-                results.append({'ImageName': image_name, 'Pixel Count': count, 'Percent of Roadway': percentage})
-                
+                results.append(
+                    {
+                        "ImageName": image_name,
+                        "Pixel Count": count,
+                        "Percent of Roadway": percentage,
+                    }
+                )
+
                 pbar.update(1)
 
     # Convert the list of results to a DataFrame
@@ -496,18 +541,20 @@ def quantify_water_on_roadway(labels_folder, roadway_mask_path, csv_path=None):
 
     # Save the DataFrame to a CSV file
     if csv_path is None:
-        csv_path = 'water_on_roadway.csv'
-        
+        csv_path = "water_on_roadway.csv"
+
     water_quantities_df.to_csv(csv_path, index=False)
 
-    return print(f'Results saved to {csv_path}')
+    return print(f"Results saved to {csv_path}")
 
 
-def plot_images_side_by_side(images_folder, overlays_folder, output_folder, csv_file, dpi=250):
+def plot_images_side_by_side(
+    images_folder, overlays_folder, output_folder, csv_file, dpi=250
+):
     """
     This function plots original images and overlay images from their respective folders side by side,
     and adds pixel count and percentage from a CSV file to the plot.
-    
+
     :param images_folder: str
         Path to the folder containing the original images.
     :param overlays_folder: str
@@ -529,18 +576,24 @@ def plot_images_side_by_side(images_folder, overlays_folder, output_folder, csv_
     df = pd.read_csv(csv_file)
 
     # Extract the base name (first 23 characters) of ImageName for matching
-    df['BaseName'] = df['ImageName'].str[:23]
-    
+    df["BaseName"] = df["ImageName"].str[:23]
+
     # Sort DataFrame by the base name
-    df.sort_values('BaseName', inplace=True)
+    df.sort_values("BaseName", inplace=True)
 
     # Get a list of files in each folder
-    images = [os.path.join(images_folder, filename) for filename in
-                   os.listdir(images_folder) if not filename.startswith('.')
-                   and os.path.isfile(os.path.join(images_folder, filename))]
-    overlays = [os.path.join(overlays_folder, filename) for filename in
-                   os.listdir(overlays_folder) if not filename.startswith('.')
-                   and os.path.isfile(os.path.join(overlays_folder, filename))]
+    images = [
+        os.path.join(images_folder, filename)
+        for filename in os.listdir(images_folder)
+        if not filename.startswith(".")
+        and os.path.isfile(os.path.join(images_folder, filename))
+    ]
+    overlays = [
+        os.path.join(overlays_folder, filename)
+        for filename in os.listdir(overlays_folder)
+        if not filename.startswith(".")
+        and os.path.isfile(os.path.join(overlays_folder, filename))
+    ]
 
     # Sort the files so that they match.
     images.sort()
@@ -551,15 +604,15 @@ def plot_images_side_by_side(images_folder, overlays_folder, output_folder, csv_
         print("Error: The two folders must contain the same number of images.")
         return
 
-    with tqdm(total=len(images), desc='Generating side-by-sides') as pbar:
+    with tqdm(total=len(images), desc="Generating side-by-sides") as pbar:
         for image, overlay in zip(images, overlays):
             # Extract the base name (without folder path) for comparison
             base_name = os.path.basename(image)[:23]
 
             # Find the corresponding row in the CSV using the BaseName column
-            row = df[df['BaseName'] == base_name].iloc[0]
-            pixel_count = row['Pixel Count']
-            percent_roadway = row['Percent of Roadway']
+            row = df[df["BaseName"] == base_name].iloc[0]
+            pixel_count = row["Pixel Count"]
+            percent_roadway = row["Percent of Roadway"]
 
             # Open images from both folders
             img1 = Image.open(image)
@@ -570,19 +623,24 @@ def plot_images_side_by_side(images_folder, overlays_folder, output_folder, csv_
 
             # Plot images side by side
             axes[0].imshow(img1)
-            axes[0].axis('off')
-            axes[0].set_title('Original Image')
+            axes[0].axis("off")
+            axes[0].set_title("Original Image")
 
             axes[1].imshow(img2)
-            axes[1].axis('off')
-            axes[1].set_title('Segmentation Overlay')
+            axes[1].axis("off")
+            axes[1].set_title("Segmentation Overlay")
 
             # Add text with pixel count and percentage
-            fig.suptitle(f"Total Number of Pixels Classified as Water: {pixel_count}, Percent of Pixels in Roadway Classified as Water: {percent_roadway:.2f}%", fontsize=12)
+            fig.suptitle(
+                f"Total Number of Pixels Classified as Water: {pixel_count}, Percent of Pixels in Roadway Classified as Water: {percent_roadway:.2f}%",
+                fontsize=12,
+            )
 
             # Save the figure to the output folder
-            output_file = os.path.join(output_folder, f'side_by_side_{os.path.basename(image)}')
-            plt.savefig(output_file, bbox_inches='tight', dpi=dpi)
+            output_file = os.path.join(
+                output_folder, f"side_by_side_{os.path.basename(image)}"
+            )
+            plt.savefig(output_file, bbox_inches="tight", dpi=dpi)
             plt.close(fig)
 
             # Update the progress bar
